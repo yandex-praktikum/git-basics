@@ -1,51 +1,25 @@
-class SuperShop:
-    def __init__(self, name):
+class Thing:
+    def __init__(self, name, weight):
         self.name = name
-        self.goods = []
-
-    def add_product(self, product):
-        self.goods.append(product)
-
-    def remove_product(self, product):
-        if product in self.goods:
-            self.goods.remove(product)
+        self.weight = weight
 
 
-class Product:
-    name = StringValue(2, 50)
-    price = PriceValue(10000)
+class Bag:
+    def __init__(self, max_weight):
+        self.max_weight = max_weight
+        self.__things = []
 
-    def __init__(self, name, price):
-        self.name = name
-        self.price = price
+    @property
+    def things(self):
+        return self.__things
 
+    def add_thing(self, thing):
+        s = self.get_total_weight()
+        if s + thing.weight <= self.max_weight
+            self.__things.append(thing)
 
-class StringValue:
-    def __init__(self, min_length, max_length):
-        self.min_length = min_length
-        self.max_length = max_length
+    def remove_thing(self, indx):
+        self.__things.pop(indx)
 
-    def __set_name__(self, owner, name):
-        self.name = "_" + name
-
-    def __get__(self, instance, owner):
-        return getattr(instance, self.name)
-
-    def __set__(self, instance, value):
-        if tupe(value) == str and self.min_length <= len(value) <= self.max_length:
-            setattr(instance, self.name, value)
-
-
-class PriceValue:
-    def __init__(self, max_value):
-        self.max_value = max_value
-
-    def __set_name__(self, owner, name):
-        self.name = "_" + name
-
-    def __get__(self, instance, owner):
-        return getattr(instance, self.name)
-
-    def __set__(self, instance, value):
-        if tupe(value) in (float, int) and 0 <= value <= self.max_value:
-            setattr(instance, self.name, value)
+    def get_total_weight(self):
+        return sum(t.weight for t in self.__things)
