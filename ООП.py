@@ -1,15 +1,29 @@
-class ValidateString:
-    def __init__(self, min_length=3, max_length=100):
-        self.min_length = min_length
-        self.max_length = max_length
+class SuperShop:
+    def __init__(self, name):
+        self.name = name
+        self.goods = []
 
-    def validate(self, string):
-        return type(string) == str and self.min_length <= len(string) <= self.max_length
+    def add_product(self, product):
+        self.goods.append(product)
+
+    def remove_product(self, product):
+        if product in self.goods:
+            self.goods.remove(product)
+
+
+class Product:
+    name = StringValue(2, 50)
+    price = PriceValue(10000)
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
 
 
 class StringValue:
-    def __init__(self, validator):
-        self.validator = validator
+    def __init__(self, min_length, max_length):
+        self.min_length = min_length
+        self.max_length = max_length
 
     def __set_name__(self, owner, name):
         self.name = "_" + name
@@ -18,22 +32,20 @@ class StringValue:
         return getattr(instance, self.name)
 
     def __set__(self, instance, value):
-        if self.validator.validate(value):
+        if tupe(value) == str and self.min_length <= len(value) <= self.max_length:
             setattr(instance, self.name, value)
 
 
-class RegisterForm:
-    login = StringValue(validator=ValidateString)
-    password = StringValue(validator=ValidateString)
-    email = StringValue(validator=ValidateString)
+class PriceValue:
+    def __init__(self, max_value):
+        self.max_value = max_value
 
-    def __init__(self, login, password, email):
-        self.login = login
-        self.password = password
-        self.email = email
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
 
-    def get_fields(self):
-        return [self.login, self.password, self.email]
+    def __get__(self, instance, owner):
+        return getattr(instance, self.name)
 
-    def show(self):
-        print(f'<form>\nЛогин: {self.login}\nПароль: {self.password}\nEmail: {self.email} </form>')
+    def __set__(self, instance, value):
+        if tupe(value) in (float, int) and 0 <= value <= self.max_value:
+            setattr(instance, self.name, value)
